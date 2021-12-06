@@ -1,4 +1,4 @@
-package main
+package cc
 
 import (
 	"context"
@@ -12,6 +12,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const (
+	port = ":50051"
+)
+
 var stuckDuration time.Duration
 
 // server is used to implement helloworld.GreeterServer.
@@ -23,7 +27,7 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Hello " + in.Name + "! From " + GetIP()}, nil
 }
 
-func simple_server() {
+func main() {
 	// simulate busy server
 	stuckDuration = time.Duration(rand.NewSource(time.Now().UnixNano()).Int63()%2) * time.Second
 
@@ -42,28 +46,4 @@ func simple_server() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-}
-
-func GetIP() string {
-	ifaces, _ := net.Interfaces()
-	// handle err
-	for _, i := range ifaces {
-		addrs, _ := i.Addrs()
-		// handle err
-		for _, addr := range addrs {
-			var ip net.IP
-			switch v := addr.(type) {
-			case *net.IPNet:
-				ip = v.IP
-			case *net.IPAddr:
-				ip = v.IP
-			default:
-				continue
-			}
-			if ip.String() != "127.0.0.1" {
-				return ip.String()
-			}
-		}
-	}
-	return ""
 }

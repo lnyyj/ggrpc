@@ -1,4 +1,4 @@
-package simple
+package cc
 
 import (
 	"context"
@@ -6,12 +6,17 @@ import (
 	"log"
 	"time"
 
+	"github.com/lnyyj/ggrpc/example/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/balancer/roundrobin"
 	"google.golang.org/grpc/resolver"
 )
 
-func Client(address string) {
+const (
+	defaultName = "rokety"
+)
+
+func Client(address string, timeout int) {
 	// Set resolver
 	resolver.SetDefaultScheme("custom_dns")
 	// Set up a connection to the server.
@@ -22,7 +27,6 @@ func Client(address string) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-
 	c := pb.NewGreeterClient(conn)
 
 	// Contact the server and print out its response.
