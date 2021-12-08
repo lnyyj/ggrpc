@@ -12,10 +12,6 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	port = ":50051"
-)
-
 var stuckDuration time.Duration
 
 // server is used to implement helloworld.GreeterServer.
@@ -27,21 +23,19 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Hello " + in.Name + "! From " + GetIP()}, nil
 }
 
-func main() {
+func SimpleServer(addr string) {
 	// simulate busy server
 	stuckDuration = time.Duration(rand.NewSource(time.Now().UnixNano()).Int63()%2) * time.Second
-
 	if stuckDuration == time.Second {
 		log.Println("I will stuck one second!!!")
 	}
 
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 	pb.RegisterGreeterServer(s, &server{})
-	// Register reflection service on gRPC server.
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

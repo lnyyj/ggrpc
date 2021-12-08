@@ -1,27 +1,25 @@
 package main
 
 import (
-	"flag"
 	"log"
-)
+	"os"
 
-var (
-	port = ":50051"
-
-	address string
-	timeout int
-
-	defaultName = "1234"
+	"github.com/lnyyj/ggrpc/example/cc"
 )
 
 func init() {
-	flag.IntVar(&timeout, "timeout", 1, "greet rpc call timeout")
-	flag.StringVar(&address, "address", "localhost:50051", "grpc server addr")
-	flag.Parse()
-
 	log.SetFlags(log.Lshortfile | log.Ldate)
 }
 
 func main() {
-
+	l := len(os.Args)
+	if l < 3 {
+		log.Fatalf("输入参数不对")
+	}
+	mode := os.Args[1] + "_" + os.Args[2]
+	addr := "12345"
+	if l == 4 {
+		addr = os.Args[3]
+	}
+	cc.Run(mode, addr)
 }
