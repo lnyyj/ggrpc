@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY example app
 
-CMD [ "app" ]
+CMD [ "./app", "simple", "server" ]
