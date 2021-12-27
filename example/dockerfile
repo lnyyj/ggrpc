@@ -1,7 +1,0 @@
-FROM alpine
-
-WORKDIR /app
-
-COPY example app
-
-CMD [ "./app", "simple", "server" ]
